@@ -25,18 +25,18 @@ const CHARACTER_QUERY = gql`
 
 export default function CharacterPage() {
   const { id } = useParams<CharacterPageParams>();
-  const { data } = useQuery(CHARACTER_QUERY, {
+  const { data, loading } = useQuery(CHARACTER_QUERY, {
     variables: { id }
   });
 
+  if (loading) return null
+
   return (
     <>
-      {data?.character ? (
-        <>
-          <CharacterContainer character={data.character} />
-          <Link to='/'><Text>Go back to the list</Text></Link>
-        </>
-      ) : null}
+      {data?.character && (
+        <CharacterContainer character={data.character} />
+      )}
+      <Link to='/'><Text>Go back to the list</Text></Link>
     </>
   );
 }
