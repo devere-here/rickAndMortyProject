@@ -1,9 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { NativeRouter, Route } from "react-router-native";
 import { ApolloProvider } from '@apollo/client/react';
-import TestComponent from './components/TestComponent';
+import { Switch } from 'react-router-dom';
+
+import CharacterList from './components/CharacterList';
+import CharacterPage from './components/CharacterPage';
 
 const client = new ApolloClient({
   uri: 'https://rickandmortyapi.com/graphql',
@@ -11,14 +14,17 @@ const client = new ApolloClient({
 });
 
 export default function App() {
-  return (
-    <ApolloProvider client={client}>
-      <View style={styles.container}>
-        <Text>Open up App.tsx to start working on your app!</Text>
-        <StatusBar style="auto" />
-        <TestComponent />
-      </View>
-    </ApolloProvider>
+  return (    
+    <View style={styles.container}>
+      <ApolloProvider client={client}>
+        <NativeRouter>
+          <Switch>
+            <Route path="/:id" component={CharacterPage} />
+            <Route exact path="/" component={CharacterList} />
+          </Switch>
+        </NativeRouter>
+      </ApolloProvider>
+    </View>
   );
 }
 

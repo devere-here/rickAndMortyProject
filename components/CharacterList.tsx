@@ -1,5 +1,8 @@
 import React from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { Link } from "react-router-native";
+import { Text } from "react-native";
+
 
 interface Character {
   id: number;
@@ -40,14 +43,16 @@ const CHARACTERS_QUERY = gql`
   }
 `
 
-export default function TestComponent() {
+export default function CharacterList() {
   const { data } = useQuery<ICharactersQuery>(CHARACTERS_QUERY);
 
   return (
     <>
-      {(data?.characters?.results || []).map((character: any) => (
-        <div>
-          Id is {character.id}, Name is {character.name}
+      {(data?.characters?.results || []).map((character: Character) => (
+        <div key={character.name}>
+          <Link to={`/${character.id}`}>
+            <Text>Id is {character.id}, Name is {character.name}</Text>
+          </Link>
         </div>
       ))}
     </>
