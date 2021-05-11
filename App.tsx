@@ -5,8 +5,8 @@ import { NativeRouter, Route } from "react-router-native";
 import { ApolloProvider } from '@apollo/client/react';
 import { Switch } from 'react-router-dom';
 
-import CharacterList from './components/CharacterList';
-import CharacterPage from './components/CharacterPage';
+import CharacterList from './pages/CharacterList';
+import CharacterPage from './pages/CharacterPage';
 
 const client = new ApolloClient({
   uri: 'https://rickandmortyapi.com/graphql',

@@ -1,7 +1,10 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
 import { useQuery, gql } from '@apollo/client';
+import { Link } from "react-router-native";
 import { Text } from "react-native";
+
+import CharacterContainer from "../components/CharacterContainer";
 
 interface CharacterPageParams {
   id: string;
@@ -12,19 +15,28 @@ const CHARACTER_QUERY = gql`
     character(id: $id) {
       id
       name
+      status
+      species
+      gender
+      image
     }
   }
 `
 
 export default function CharacterPage() {
   const { id } = useParams<CharacterPageParams>();
-  const { data, loading } = useQuery(CHARACTER_QUERY, {
+  const { data } = useQuery(CHARACTER_QUERY, {
     variables: { id }
   });
 
   return (
     <>
-      {!loading && <Text>On the character page for character {data?.character?.name}</Text>}
+      {data?.character ? (
+        <>
+          <CharacterContainer character={data.character} />
+          <Link to='/'><Text>Go back to the list</Text></Link>
+        </>
+      ) : null}
     </>
   );
 }
