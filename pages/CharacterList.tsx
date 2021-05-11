@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
+import { TextInput, StyleSheet } from "react-native";
 import { Link } from "react-router-native";
 
 import CharacterContainer from "../components/CharacterContainer";
@@ -53,10 +54,28 @@ const CHARACTERS_QUERY = gql`
 
 export default function CharacterList() {
   const { data } = useQuery<ICharactersQuery>(CHARACTERS_QUERY);
+  const [filterText, setFilterText] = useState<string>('');
+  const [characters, setCharacters] = useState<Character[]>([]);
+
+  useEffect(() => {
+    setCharacters(data?.characters?.results || [])
+  }, [data?.characters?.results]);
+
+  useEffect(() => {
+    const lowerCaseFilterText = filterText.toLowerCase()
+    const filteredCharacters = (data?.characters?.results || []).filter((character: Character) => {
+      const lowerCaseName = character.name.toLowerCase()
+
+      return lowerCaseName.includes(lowerCaseFilterText)
+    })
+
+    setCharacters(filteredCharacters)
+  }, [filterText])
 
   return (
     <div>
-      {(data?.characters?.results || []).map((character: Character) => (
+      <TextInput style={styles.input} value={filterText} onChangeText={(text: string) => setFilterText(text)} />
+      {(characters || []).map((character: Character) => (
         <Link to={`/${character.id}`} key={character.name}>
           <CharacterContainer character={character} />
         </Link>
@@ -64,3 +83,11 @@ export default function CharacterList() {
     </div>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+});
